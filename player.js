@@ -1,4 +1,4 @@
-﻿import { canvas } from './game.js'; 
+import { canvas } from './game.js'; 
 import { keys } from './game.js';
 import { Bullet } from './bullets.js';
 
@@ -62,9 +62,13 @@ class Player {
     this.doubleShootingTime = 0;
     this.thrustX = 0;
     this.thrustY = 0;
-    // this.lives = 3;
+    //this.livesLeft = 3;
     this.bulletSpeed = this.originalBulletSpeed;
     this.backfrontShooting = false;
+  }
+  resetlives() {
+    this.livesLeft = 3;
+    this.lives = 3;
   }
   update() {
     this.handleMovement();
@@ -185,21 +189,17 @@ class Player {
     const distance = Math.sqrt(dx * dx + dy * dy);
     return distance < this.width / 2 + bullet.size / 2;
   }
-  checkCollisionWithPowerup(powerup, asteroids) {
-    const dx = this.x - powerup.x;
-    const dy = this.y - powerup.y;
+  checkCollisionWithEnemyBullet(enemyBullet) {
+    const dx = this.x - enemyBullet.x;
+    const dy = this.y - enemyBullet.y;
     const distance = Math.sqrt(dx * dx + dy * dy);
-    const minDistance = (this.width / 2) + (powerup.width / 2);
-    if (distance < minDistance && powerup.type === 'slowMotion') {
-      for (const asteroid of asteroids) {
-        asteroid.slowMotion = true;
-        console.log('player' );
-      }
+    const minDistance = (enemyBullet.size / 2) + (this.width / 2);
+    if (distance < minDistance) {
+      respawnPlayer(); 
       return true;
     }
     return false;
   }
-  
   }
   function isColliding(rect1, rect2) {
     return (
