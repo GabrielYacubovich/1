@@ -1,7 +1,7 @@
-﻿// game.js
+// game.js
 import { Player } from './player.js';
-import { Powerup } from './powerup.js';
 import { Asteroid } from './asteroid.js';
+import { Powerup } from './powerup.js';
 import { Enemy } from './enemy.js';
 import { randomSpaceFact } from './spacefacts.js';
 const canvas = document.getElementById('game-canvas');
@@ -12,6 +12,7 @@ canvas.height = window.innerHeight;
 let onWelcomeScreen = true; // Step 1
 const player = new Player(gameOver, 3);
 const enemy = new Enemy(100, 100, 2, 30);
+
 // Resize canvas on window resize
 window.addEventListener('resize', () => {
   canvas.width = window.innerWidth;
@@ -151,7 +152,7 @@ function drawWelcomeScreen() { // Step 3
 function updatePowerups() {
   for (let i = powerups.length - 1; i >= 0; i--) {
     const powerup = powerups[i];
-    powerup.update(lives, asteroids, enemies, Asteroid);
+    powerup.update(lives, asteroids, enemies);
     if (powerup.markForDeletion) {
       powerups.splice(i, 1);
     }
@@ -294,7 +295,6 @@ function update() {
         }
       }
     }
-    
     // Remove marked for deletion objects
     player.bullets = player.bullets.filter(bullet => !bullet.markForDeletion);
     enemies = enemies.filter(enemy => !enemy.markForDeletion);
@@ -412,7 +412,7 @@ function checkCollisions() {
       break; // Exit the loop after the first collision is detected
     }
   }
-  
+  // Check collisions between player and powerups
 
 }
 function flashGameOverText() {
@@ -453,6 +453,7 @@ function restartGame() {
   score = 0;
   level = 1;
   lives = 3;
+  player.resetlives();
   player.reset();
   player.resetPowerupEffects();
   asteroidTimer = 100;
