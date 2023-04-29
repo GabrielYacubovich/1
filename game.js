@@ -12,7 +12,6 @@ canvas.height = window.innerHeight;
 let onWelcomeScreen = true; // Step 1
 const player = new Player(gameOver, 3);
 const enemy = new Enemy(100, 100, 2, 30);
-
 // Resize canvas on window resize
 window.addEventListener('resize', () => {
   canvas.width = window.innerWidth;
@@ -95,6 +94,20 @@ function incrementScore(points) {
     lives++;
   }
 }
+function handleTextFlash() {
+  if (!textFlashInterval) {
+    textFlashInterval = setInterval(() => {
+      flashText = !flashText;
+      flashTextCount++;
+
+      if (flashTextCount >= flashTextDuration / 100) {
+        clearInterval(textFlashInterval);
+        textFlashInterval = null;
+        flashTextCount = 0;
+      }
+    }, 500);
+  }
+}
 function drawRestartButton(ctx) {
   const buttonWidth = 150;
   const buttonHeight = 40;
@@ -150,6 +163,7 @@ function drawWelcomeScreen() { // Step 3
   ctx.fillText(pinkText, canvas.width / 2 - pinkTextWidth / 2 + 100, canvas.height / 2 + 100);
 }
 function updatePowerups() {
+  
   for (let i = powerups.length - 1; i >= 0; i--) {
     const powerup = powerups[i];
     powerup.update(lives, asteroids, enemies);
@@ -348,7 +362,8 @@ function update() {
     // Display one random space fact when the player ends the game
 
     drawRestartButton(ctx); // Add this line to show the button on the game over screen
-    let playAgainTextVisible = !flashText;
+    handleTextFlash(); // Add this line
+        let playAgainTextVisible = !flashText;
     if (playAgainTextVisible) {
       ctx.font = '18px Joystix';
       ctx.fillStyle = 'white';
