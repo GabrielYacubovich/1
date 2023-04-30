@@ -9,10 +9,9 @@ const ctx = canvas.getContext('2d');
 let spaceFactText = `Space Fact: ${randomSpaceFact()}`;
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
-let onWelcomeScreen = true; // Step 1
+let onWelcomeScreen = true; 
 const player = new Player(gameOver, 3);
 const enemy = new Enemy(100, 100, 2, 30);
-// Resize canvas on window resize
 window.addEventListener('resize', () => {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
@@ -43,7 +42,7 @@ canvas.addEventListener('click', (event) => {
     playerName = getPlayerName();
     restartGame();
   }
-  if (onWelcomeScreen && keys['Space']) { // check if spacebar is pressed and the game is on the welcome page
+  if (onWelcomeScreen && keys['Space']) { 
     onWelcomeScreen = false;
   }
 });
@@ -62,7 +61,6 @@ window.addEventListener('keyup', (event) => {
 let playerName = getPlayerName();
 let paused = false;
 let lives = player.lives;
-
 let asteroids = [];
 let enemies = [];
 let powerups = [];
@@ -71,7 +69,6 @@ let asteroidTimer = 100;
 let enemyTimer = 400;
 let powerupTimer = 0;
 let score = 0;
-let level = 1;
 let textFlashInterval = null;
 let flashText = false;
 let flashTextCount = 0;
@@ -105,7 +102,7 @@ function handleTextFlash() {
         textFlashInterval = null;
         flashTextCount = 0;
       }
-    }, 500);
+    }, 400);
   }
 }
 function drawRestartButton(ctx) {
@@ -121,7 +118,7 @@ function drawRestartButton(ctx) {
   const buttonTextWidth = ctx.measureText(buttonText).width;
   ctx.fillText(buttonText, buttonX + buttonWidth / 2 - buttonTextWidth / 2, buttonY + buttonHeight / 2 + 6);
 }
-function drawWelcomeScreen() { // Step 3
+function drawWelcomeScreen() { 
   ctx.font = '80px Joystix';
   ctx.fillStyle = 'white';
   let gameNameText = 'AsteroidsGPT';
@@ -162,17 +159,16 @@ function drawWelcomeScreen() { // Step 3
   let pinkTextWidth = ctx.measureText(pinkText).width;
   ctx.fillText(pinkText, canvas.width / 2 - pinkTextWidth / 2 + 100, canvas.height / 2 + 100);
 }
-function updatePowerups() {
+// function updatePowerups() {
   
-  for (let i = powerups.length - 1; i >= 0; i--) {
-    const powerup = powerups[i];
-    powerup.update(lives, asteroids, enemies);
-    if (powerup.markForDeletion) {
-      powerups.splice(i, 1);
-    }
-  }
-}
-
+//   for (let i = powerups.length - 1; i >= 0; i--) {
+//     const powerup = powerups[i];
+//     powerup.update(lives, asteroids, enemies);
+//     if (powerup.markForDeletion) {
+//       powerups.splice(i, 1);
+//     }
+//   }
+// }
 function spawnAsteroids() {
   if (asteroidTimer <= 0) {
     const size = 60;
@@ -214,7 +210,6 @@ function shootEnemyBullets() {
   for (const enemy of enemies) {
     const bullet = enemy.shootAtPlayer(player);
     if (bullet) {
-      // enemyBullets.push(bullet);
       enemyBullets.push(bullet);
     }
   }
@@ -234,7 +229,7 @@ function spawnPowerups() {
 let gameOverScreen = false;
 function update() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  if (onWelcomeScreen) { // Step 4
+  if (onWelcomeScreen) { 
     drawWelcomeScreen();
     if (keys['Space']) {
       onWelcomeScreen = false;
@@ -348,22 +343,14 @@ function update() {
     ctx.fillText(scoreText, canvas.width / 2 - scoreTextWidth / 2, canvas.height / 2 + 60);
     ctx.font = '18px Joystix';
     ctx.fillStyle = 'white';
-
-    //Put here 
     if (Boolean(spaceFactText) && gameOverScreen) {
       let spaceFactTextWidth = ctx.measureText(spaceFactText).width;
       ctx.fillText(spaceFactText, canvas.width / 2 - spaceFactTextWidth / 2, canvas.height / 2 + 280);
     }
-    
-
-    //
-
-
-    // Display one random space fact when the player ends the game
-
-    drawRestartButton(ctx); // Add this line to show the button on the game over screen
-    handleTextFlash(); // Add this line
-        let playAgainTextVisible = !flashText;
+        // Display one random space fact when the player ends the game
+    drawRestartButton(ctx); 
+    handleTextFlash(); 
+    let playAgainTextVisible = !flashText;
     if (playAgainTextVisible) {
       ctx.font = '18px Joystix';
       ctx.fillStyle = 'white';
@@ -388,11 +375,10 @@ function gameLoop() {
 function respawnPlayer() {
   player.takeDamage(1, "asteroid");
   if (!player.invulnerable) {
-    lives--; // Decrement lives
+    lives--; 
   }
   player.resetPowerupEffects();
-  
-}
+ }
 function checkCollisions() {
   // Check collisions between player and asteroids
   for (const asteroid of asteroids) {
@@ -412,8 +398,8 @@ function checkCollisions() {
     if (player.checkCollisionWithBullet(bullet)) {
       bullet.markForDeletion = true;
       if (!player.invulnerable && player.collisionDelay === 0) {
-        lives--; // Decrement lives here
-        respawnPlayer(); // Call respawnPlayer() here
+        lives--; 
+        respawnPlayer(); 
         if (player.doubleShooting && !player.doubleShootingLost) {
           player.doubleShootingLost = true;
           player.bulletSpeed = player.originalBulletSpeed;
@@ -426,19 +412,6 @@ function checkCollisions() {
       }
       break; // Exit the loop after the first collision is detected
     }
-  }
-  // Check collisions between player and powerups
-
-}
-function flashGameOverText() {
-  if (flashText) {
-    ctx.font = '18px Joystix';
-    ctx.fillStyle = 'white';
-    let playAgainText = 'Press "N" to play again';
-    let playAgainTextWidth = ctx.measureText(playAgainText).width;
-    let playAgainX = canvas.width / 2 - playAgainTextWidth / 2;
-    let playAgainY = canvas.height / 2 + 180;
-    ctx.fillText(playAgainText, playAgainX, playAgainY);
   }
 }
 function saveHighScore(playerName, score) {
@@ -456,17 +429,13 @@ function getHighScore() {
 function gameOver() {
   gameOverScreen = true;
   saveHighScore(playerName, score);
-
-
 }
-
 function restartGame() {
   gameOverScreen = false;
   asteroids = [];
   enemies = [];
   powerups = [];
   score = 0;
-  level = 1;
   lives = 3;
   player.resetlives();
   player.reset();
@@ -474,8 +443,6 @@ function restartGame() {
   asteroidTimer = 100;
   enemyTimer = 400;
   powerupTimer = 0;
-  
-
 }
 gameLoop();
 export { canvas };
@@ -483,4 +450,3 @@ export { keys };
 export { incrementScore };
 export { player };
 export { ctx };
-// export { lives };
